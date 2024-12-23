@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Retrieval</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Data Retrieval</h1>
+
+    <div class="box">
+        <h2>Get Customers</h2>
+        <button onclick="getData('customers')">Get Customers</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Orders</h2>
+        <button onclick="getData('orders')">Get Orders</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Products</h2>
+        <button onclick="getData('products')">Get Products</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Payments</h2>
+        <button onclick="getData('payments')">Get Payments</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Cancels</h2>
+        <button onclick="getData('cancels')">Get Cancels</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Whishlist</h2>
+        <button onclick="getData('whishlist')">Get Whishlist</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Recently Viewed</h2>
+        <button onclick="getData('recently')">Get Recently Viewed</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Coupons</h2>
+        <button onclick="getData('coupons')">Get Coupons</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Sales</h2>
+        <button onclick="getData('sales')">Get Sales</button>
+    </div>
+
+    <div class="box">
+        <h2>Get Order Items</h2>
+        <button onclick="getData('order_items')">Get Order Items</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        async function getData(type) {
+            const response = await fetch(`/get_${type}`); // Use relative URL
+            const data = await response.json();
+            displayResults(data, type);
+        }
+
+        function displayResults(data, type) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Clear previous results
+
+            if (Array.isArray(data) && data.length > 0) {
+                let table = '<table>';
+                if (type === 'customers') {
+                    table += `
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Name</th>
+                            <th>Phone No</th>
+                            <th>Email</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.customer_id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.phone_no}</td>
+                            <td>${item.email}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'orders') {
+                    table += `
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Shipping Address</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.order_id}</td>
+                            <td>${item.date}</td>
+                            <td>${item.shipping_address}</td>
+                            <td>${item.total_amount}</td>
+                            <td>${item.status}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'products') {
+                    table += `
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th></tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.product_id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.price}</td>
+                            <td>${item.stock}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'payments') {
+                    table += `
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.payment_id}</td>
+                            <td>${item.status}</td>
+                            <td>${item.date}</td>
+                            <td>${item.method}</td>
+                            <td>${item.amount}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'cancels') {
+                    table += `
+                        <tr>
+                            <th>Cancel ID</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Refund</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.cancel_id}</td>
+                            <td>${item.reason}</td>
+                            <td>${item.status}</td>
+                            <td>${item.refund}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'whishlist') {
+                    table += `
+                        <tr>
+                            <th>Whishlist ID</th>
+                            <th>Customer ID</th>
+                            <th>Product ID</th>
+                            <th>Saved Date</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.whishlist_id}</td>
+                            <td>${item.customer}</td>
+                            <td>${item.product}</td>
+                            <td>${item.saved}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'recently') {
+                    table += `
+                        <tr>
+                            <th>Recently ID</th>
+                            <th>Customer ID</th>
+                            <th>Product ID</th>
+                            <th>Viewed Date</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.recently_id}</td>
+                            <td>${item.customer}</td>
+                            <td>${item.product}</td>
+                            <td>${item.viewed}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'coupons') {
+                    table += `
+                        <tr>
+                            <th>Coupon ID</th>
+                            <th>Order ID</th>
+                            <th>Validity</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.coupon_id}</td>
+                            <td>${item.orders}</td>
+                            <td>${item.validity}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'sales') {
+                    table += `
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Product ID</th>
+                            <th>Amount</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.sale_id}</td>
+                            <td>${item.product}</td>
+                            <td>${item.amount}</td>
+                        </tr>`;
+                    });
+                } else if (type === 'order_items') {
+                    table += `
+                        <tr>
+                            <th>Order Item ID</th>
+                            <th>Order ID</th>
+                            <th>Product ID</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>`;
+                    data.forEach(item => {
+                        table += `
+                        <tr>
+                            <td>${item.order_item_id}</td>
+                            <td>${item.orders}</td>
+                            <td>${item.product}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.price}</td>
+                        </tr>`;
+                    });
+                }
+                table += '</table>';
+                resultsDiv.innerHTML = table;
+            } else {
+                resultsDiv.textContent = 'No data found or an error occurred.';
+            }
+        }
+    </script>
+
+</body>
+</html>
